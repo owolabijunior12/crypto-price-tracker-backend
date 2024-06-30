@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Cryptocurrency Price Tracker</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .crypto-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .crypto-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 30%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Cryptocurrency Price Tracker</h1>
+
+    <div class="crypto-container">
+        <div class="crypto-item">
+            <h2>Bitcoin</h2>
+            $<p id="bitcoin-price">Loading...</p>
+        </div>
+        <div class="crypto-item">
+            <h2>Ethereum</h2>
+            $<p id="ethereum-price">Loading...</p>
+        </div>
+        <div class="crypto-item">
+            <h2>Dogecoin</h2>
+            $<p id="dogecoin-price">Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        var socket = io(); // Connect to Socket.io server
+
+        // Event listener for 'update_prices' event from server
+        socket.on('update_prices', function(data) {
+            console.log(data); // Optional: log received data to console
+
+            // Update Bitcoin price
+            if (data.bitcoin ) {
+                document.getElementById('bitcoin-price').textContent = `$${data[0]}`;
+            } else {
+                document.getElementById('bitcoin-price').textContent = 'Price unavailable';
+            }
+
+            // Update Ethereum price
+            if (data.ethereum && data.ethereum.usd) {
+                document.getElementById('ethereum-price').textContent = `$${data.ethereum.usd}`;
+            } else {
+                document.getElementById('ethereum-price').textContent = 'Price unavailable';
+            }
+
+            // Update Dogecoin price
+            if (data.dogecoin && data.dogecoin.usd) {
+                document.getElementById('dogecoin-price').textContent = `$${data.dogecoin.usd}`;
+            } else {
+                document.getElementById('dogecoin-price').textContent = 'Price unavailable';
+            }
+        });
+    </script>
+</body>
+</html>
